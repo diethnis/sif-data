@@ -41,7 +41,8 @@ class Units(object):
 		pass
 	def delHand(unitno):
 		pass
-	def update(
+	def updateHand(uniqueID):
+		pass
 	def addAlbum(inp):
 		# parse unitno and status (idolized, maxlevel, kizuna)
 		pass
