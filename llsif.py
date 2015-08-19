@@ -27,10 +27,35 @@ def getUnitData(unitno):
 	url = 'http://schoolido.lu/api/cards/{}/'.format(unitno)
 	return getJSONData(url)
 
+def loadFromFile(sftp):
+	if not sftp.exists(datafile) and sftp.isfile(datafile):
+		print('Do something')
+#	handle multiple accounts/servers?
+
+class Units(object):
+	def __init__(self, accountName, server='jp'):
+		pass
+	def createEmptyServer(self, accountName, server='jp'):
+		pass
+	def addHand(unitno):
+		pass
+	def delHand(unitno):
+		pass
+	def update(
+	def addAlbum(inp):
+		# parse unitno and status (idolized, maxlevel, kizuna)
+		pass
+	def delAlbum(unitno):
+		pass
+
+# how even class? lel
+
+# del dict['key'] removes elements
 # * prefix splats lists/tuples
-# ** prefix splats dictionaries
+# ** prefix splats dictionaries; use with .format by {key}
 
 currtime = getTime()
+datafile = 'sifdata.yaml'
 
 parser = argparse.ArgumentParser(description='Check and update LLSIF unit data')
 parser.add_argument('-v', '--verbose', action='count', default=0,
@@ -73,6 +98,26 @@ while not args.password:
 logger.debug('Got credentials. HOST: {} USERNAME: {} PASSWORD: {}'.format(
 		args.host, args.username, '*' * len(args.password)))
 
+credentials = {'host':args.host, 'port':22, 'username':args.username, 'password':args.password}
+
+# create loop for CLI menu navigation
+
+if args.noact:
+	logger.info('Check data on FTP server; logging in')
+	with pysftp.Connection(**credentials) as sftp:
+		tempdata = loadFromFile(sftp)
+		if not sftp.exists('sifdata.yaml'): # also .isfile()
+			logger.info('sifdata.yaml does not exist on the remote server')
+		print(sftp.listdir())
+		print(sftp.pwd)
+
+else:
+	logger.info('Update data on FTP server; logging in')
+	with pysftp.Connection(**credentials) as sftp:
+		if not sftp.exists('sifdata.yaml'): # also .isfile()
+			logger.info('sifdata.yaml does exist on the remote server')
+
+
 logger.debug('Testing user input.')
 try:
 	unitno = 0+int(input('Enter a unit number to look up: '))
@@ -91,10 +136,9 @@ print(yamldata)
 
 print('.temp_llsif_{}'.format(currtime))
 
-#with pysftp.Connection(host=args.host, username=args.username, password=args.password) as sftp:
-#	print(sftp.listdir())
-#	print(sftp.pwd)
-#	sftp.close()
-#	# docs:  http://pysftp.readthedocs.org/en/release_0.2.8/
+# see ~/testweb.py for creating temp HTML file
+
+# docs:  http://pysftp.readthedocs.org/en/release_0.2.8/
 
 # stackoverflow.com/questions/7225900/
+# rogerdudler.github.io/git-guide/
