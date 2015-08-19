@@ -35,7 +35,7 @@ parser.add_argument('-v', '--verbose', action='count', default=0,
 group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('-n', '--noact', action='store_true',
 					help='Do nothing. Check data on FTP server')
-group.add_argument('-f', '--ftp', action='store_true',
+group.add_argument('-u', '--update', action='store_true',
 					help='Upload data to FTP server')
 parser.add_argument('host', nargs='?',
 					help='The address of the FTP server')
@@ -96,4 +96,3 @@ print('.temp_llsif_{}'.format(currtime))
 # git push origin master
 # stackoverflow.com/questions/7225900/
 # github.com/robbyrussell/oy-my-zsh
-
