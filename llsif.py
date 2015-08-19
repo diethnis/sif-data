@@ -14,12 +14,18 @@ def getTime():
 	return strftime('%Y%m%d%H%M%S')
 
 def getJSONData(url):
-	output = 'JSONDATA from '.format(url)
-	return output
+	rawpagedata = requests.get(url)
+	encoding = rawpagedata.headers['content-type']
+	if 'utf' in encoding.lower() and '8' in encoding:
+		pagedata = rawpagedata.content.decode('UTF-8')
+	else:
+		pagedata = rawpagedata.content.decode('Windows-1257')
+	jsondata = json.loads(pagedata)
+	return jsondata
 
 def getUnitData(unitno):
-	print('call to getJSONData')
-	return getJSONData('asdf')
+	url = 'http://schoolido.lu/api/cards/{}/'.format(unitno)
+	return getJSONData(url)
 
 currtime = getTime()
 
@@ -71,19 +77,11 @@ except:
 	unitno = 136
 
 
-print('Testing API call and GET request for unit {}.'.format(unitno))
-url = 'http://schoolido.lu/api/cards/{}/'.format(unitno)
-rawpagedata = requests.get(url)
-encoding = rawpagedata.headers['content-type']
-if 'utf' in encoding.lower() and '8' in encoding:
-	pagedata = rawpagedata.content.decode('UTF-8')
-else:
-	pagedata = rawpagedata.content.decode('Windows-1257')
-input('Testing JSON parsing.')
-jsondata = json.loads(pagedata)
-print(json.dumps(jsondata['idol'], sort_keys=False, indent=4, separators=(',', ': '), ensure_ascii=False))
+logger.info('Testing API call and GET request for unit {}.'.format(unitno))
+logger.info('Testing JSON parsing.')
+print(json.dumps(getUnitData(unitno)['idol'], sort_keys=False, indent=4, separators=(',', ': '), ensure_ascii=False))
 input('\n\n')
-yamldata = yaml.safe_dump(jsondata, allow_unicode=True)
+yamldata = yaml.safe_dump(getUnitData(unitno), allow_unicode=True)
 print(yamldata)
 
 print('.temp_llsif_{}'.format(currtime))
